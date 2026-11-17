@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fae08268f318194aae9d4274f6a59c7, type: 3}
+  m_Name: Tutorial_06_Combat
+  m_EditorClassIdentifier: 
+  startNodeId: start
+  nodes:
+  - id: start
+    speaker: "引路者"
+    text: "前方有敌人。移动鼠标瞄准，然后按鼠标左键开火。"
+    next: tip
+    choices: []
+  - id: tip
+    speaker: "引路者"
+    text: "子弹需要飞行时间，保持距离并瞄准敌人的移动方向。击败敌人后继续前进。"
+    next: 
+    choices: []

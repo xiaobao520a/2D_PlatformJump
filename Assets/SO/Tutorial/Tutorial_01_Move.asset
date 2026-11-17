@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fae08268f318194aae9d4274f6a59c7, type: 3}
+  m_Name: Tutorial_01_Move
+  m_EditorClassIdentifier: 
+  startNodeId: start
+  nodes:
+  - id: start
+    speaker: "引路者"
+    text: "先活动一下脚步。使用 A、D 键左右移动。"
+    next: tip
+    choices: []
+  - id: tip
+    speaker: "引路者"
+    text: "很好。沿着地面走到前方，继续熟悉你的脚步。"
+    next: 
+    choices: []
