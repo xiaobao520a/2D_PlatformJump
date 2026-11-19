@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//抽象的实体类 Player和Enemy继承
 public abstract class Entity : MonoBehaviour, I_Damaged
 {
     public StateMachine stateMachine; //状态机

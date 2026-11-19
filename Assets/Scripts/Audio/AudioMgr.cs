@@ -10,6 +10,7 @@ public class AudioMgr : Singleton_AutoWithMono<AudioMgr>
 {
     void Awake()
     {
+        //数据持久化 一开始先得到之前保存的音乐 音量大小
         backgroundMusicVolume=PlayerPrefs.GetFloat("MusicVolume",0.5f);
         soundEffectVolume=PlayerPrefs.GetFloat("SoundVolume",0.5f);
     }
@@ -17,6 +18,7 @@ public class AudioMgr : Singleton_AutoWithMono<AudioMgr>
     //背景音乐
     private AudioSource backgroundMusic=null;
     public float backgroundMusicVolume=0.5f; //背景音乐大小 默认0.5f
+
 
     //音效
     private GameObject soundEffectObj=null; //音效的各种AudioSource的依附对象
@@ -30,7 +32,7 @@ public class AudioMgr : Singleton_AutoWithMono<AudioMgr>
     private bool prewarm=false; //是否预热过音效
 
     //背景音乐相关
-    //播放背景音乐
+    //播放背景音乐 第二个API的意思是 是否是从暂停中恢复 还是第一次播放
     public void PlayBackgroundMusic(string name,bool isPause=false)
     {
         //动态创建播放背景音乐的AudioSource组件
@@ -87,6 +89,7 @@ public class AudioMgr : Singleton_AutoWithMono<AudioMgr>
             backgroundMusic.volume=backgroundMusicVolume;
     }
 
+
     //音效相关
     //音效对象池相关
     //确保有音效父物体 并且在首次使用时预热池子 挂载初始的AudioSource组件
@@ -108,6 +111,7 @@ public class AudioMgr : Singleton_AutoWithMono<AudioMgr>
             {
                 AudioSource source=soundEffectObj.AddComponent<AudioSource>();
                 source.playOnAwake=false;
+                source.enabled=false;
                 sourcePool.Push(source);
             }
             prewarm=true;
@@ -122,7 +126,10 @@ public class AudioMgr : Singleton_AutoWithMono<AudioMgr>
         {
             AudioSource source=sourcePool.Pop();
             if(source!=null)
+            {
+                source.enabled=true;
                 return source;
+            }
         }
 
         //没有就先确保有音效父物体 并且预热池子
@@ -131,6 +138,7 @@ public class AudioMgr : Singleton_AutoWithMono<AudioMgr>
         //这是比较保险的做法 新增一个一定可以拿到的 不论预热与否
         AudioSource newSource=soundEffectObj.AddComponent<AudioSource>();
         newSource.playOnAwake=false;
+        newSource.enabled=true;
         return newSource;
     }
 
@@ -143,16 +151,14 @@ public class AudioMgr : Singleton_AutoWithMono<AudioMgr>
         source.clip=null;
         source.loop=false;
         source.volume=soundEffectVolume;
+        source.enabled=false;
         sourcePool.Push(source);
     }
 
     //播放结束后回收 比如非循环音效 播放完就回收
-    private IEnumerator RecycleAfterPlay(AudioSource source,float delay)
+    private IEnumerator RecycleAfterPlay(AudioSource source)
     {
-        //防止可能播到一半暂停了 没有播放完就销毁
-        while (source.isPlaying) yield return null;
-
-        yield return new WaitForSeconds(delay);
+        while (source!=null&&source.isPlaying) yield return null;
 
         if(source!=null&&soundEffectList.Contains(source))
         {
@@ -182,7 +188,7 @@ public class AudioMgr : Singleton_AutoWithMono<AudioMgr>
             soundEffectList.Add(source);
 
             //如果是非循环音效 播放结束后就自动结束
-            if(!isLoop) StartCoroutine(RecycleAfterPlay(source,clip.length));
+            if(!isLoop) StartCoroutine(RecycleAfterPlay(source));
 
             callBack?.Invoke(source);
         },isSync);

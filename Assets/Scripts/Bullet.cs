@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : MonoBehaviour,I_Poolable
 {
     [SerializeField] private float bulletSpeed=5f;
     [SerializeField] private float destroyTime=3f;
@@ -12,16 +12,13 @@ public class Bullet : MonoBehaviour
     private float timer=0;
     private bool hasHitEnemy;
 
+    public int MaxPoolSize => 20;
+
     void Awake()
     {
         rb=GetComponent<Rigidbody2D>();
     }
 
-    void OnEnable()
-    {
-        timer=0;
-        hasHitEnemy=false;
-    }
 
     void Update()
     {
@@ -39,7 +36,6 @@ public class Bullet : MonoBehaviour
         rb.velocity=direction*bulletSpeed;
     }
 
-    
 
     void OnTriggerEnter2D(Collider2D collision)
     {
@@ -51,5 +47,15 @@ public class Bullet : MonoBehaviour
         PoolMgr.Instance.Push("player","Bullet",gameObject);
     }
 
+    public void OnPush()
+    {
+        timer=0;
+        hasHitEnemy=false;
+    }
 
+    public void OnPop()
+    {
+        timer=0;
+        hasHitEnemy=false;
+    }
 }

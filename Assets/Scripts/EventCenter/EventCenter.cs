@@ -8,6 +8,7 @@ public class EventCenter:Singleton_WithoutMono<EventCenter>
 {
     private EventCenter(){}
 
+    //管理事件和订阅相应事件的所有函数的字典
     private Dictionary<E_EventType, Delegate> eventDic = new Dictionary<E_EventType, Delegate>(); //管理事件的字典 里氏替换原则
 
     //无参广播 通知订阅对应事件的 所有委托(函数)执行
@@ -15,14 +16,14 @@ public class EventCenter:Singleton_WithoutMono<EventCenter>
     {
         //如果有这个事件类型
         if (eventDic.ContainsKey(type))
-            (eventDic[type] as Action).Invoke();
+            (eventDic[type] as Action)?.Invoke();
     }
 
     //有参广播
     public void Broadcast<T>(E_EventType type,T data)
     {
         if(eventDic.ContainsKey(type))
-            (eventDic[type] as Action<T>).Invoke(data);
+            (eventDic[type] as Action<T>)?.Invoke(data);
     }
 
     //无参 为对应的事件添加订阅的方法

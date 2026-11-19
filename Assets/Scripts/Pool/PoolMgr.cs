@@ -14,12 +14,13 @@ public class PoolMgr : Singleton_WithoutMono<PoolMgr>
     //一个池子：预制体 + 回收的实例
     private class Pool
     {
-        public GameObject prefab;
+        public GameObject prefab; //预热时加载的预制体
         public Stack<GameObject> stack = new Stack<GameObject>(); //具体放物体的池子
         public List<UnityAction>callBacks = new List<UnityAction>(); //加载完的回调
         public bool isLoading; //是否正在加载
     }
 
+    //资源名和对应的Pool的字典
     private Dictionary<string, Pool> poolDic = new Dictionary<string, Pool>();
 
     //用"包名/资源名"当key 防止不同包有同名资源
@@ -103,6 +104,7 @@ public class PoolMgr : Singleton_WithoutMono<PoolMgr>
     public void Push(string abName, string resName, GameObject obj)
     {
         if (obj == null) return;
+        if(!obj.activeSelf) return;
 
         string key = GetKey(abName, resName);
         if (!poolDic.TryGetValue(key, out Pool pool))
